@@ -36,5 +36,7 @@ export class EditContactComponent implements OnInit {
     });
   }
 
-  saveContact() {}
+  saveContact() {
+    console.log(this.contactForm.value);
+  }
 }

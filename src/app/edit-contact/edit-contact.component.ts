@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -6,6 +7,11 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./edit-contact.component.scss']
 })
 export class EditContactComponent implements OnInit {
+firstName= new FormControl();
+lastName= new FormControl();
+dateOfBirth= new FormControl();
+favoritesRanking= new FormControl();
+
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {

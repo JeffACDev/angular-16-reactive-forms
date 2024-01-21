@@ -11,18 +11,10 @@ export class ContactsService {
   constructor(private http: HttpClient) {}
 
   getContact(id: string): Observable<Contact | undefined> {
-    return this.http.get<Contact>(`api/contacts/${id}`).pipe(
-      map((c) => {
-        c.dateOfBirth.split('T')[0];
-        return c;
-      })
-    );
-
-    // To simplify things, commented out date conversion to just hadle date as string because JSON just handles dates and strings, anyway.
-    /*  .pipe(map(c => {
+    return this.http.get<Contact>(`api/contacts/${id}`).pipe(map(c => {
         const dob = c.dateOfBirth ? new Date(c.dateOfBirth) : null;
         return { ...c, dateOfBirth: dob }
-      })); */
+      }));
   }
 
   getAllContacts(): Observable<Contact[]> {

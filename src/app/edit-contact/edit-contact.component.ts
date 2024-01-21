@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
-  FormGroup,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,7 +17,7 @@ export class EditContactComponent implements OnInit {
   contactForm = this.fb.nonNullable.group({
     id: '',
     personal: false,
-    firstName: ['', Validators.required],
+    firstName: ['', [Validators.required, Validators.minLength(3)]],
     lastName: '',
     dateOfBirth: <Date | null>null,
     favoritesRanking: <number | null>null,

@@ -96,13 +96,19 @@
         <textarea
           placeholder="Notes"
           rows="5"
+          [class.error]="notes.invalid"
           formControlName="notes"
         ></textarea>
+        <em *ngIf="notes.errors?.['restrictedWords']"
+          >Restricted words found: {{note.error?.['restrictedWords']}</em
+        >
       </div>
     </section>
     <div class="buttons">
       <button class="secondary">Cancel</button>
-      <button type="submit" class="primary" [disabled]="contactForm.invalid">Save</button>
+      <button type="submit" class="primary" [disabled]="contactForm.invalid">
+        Save
+      </button>
     </div>
   </form>
 </div>

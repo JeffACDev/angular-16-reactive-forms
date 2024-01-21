@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContactsService } from '../contacts/contacts.service';
 import { addressTypeValues, phoneTypeValues } from '../contacts/contact.model';
@@ -14,7 +19,7 @@ export class EditContactComponent implements OnInit {
   contactForm = this.fb.nonNullable.group({
     id: '',
     personal: false,
-    firstName: '',
+    firstName: ['', Validators.required],
     lastName: '',
     dateOfBirth: <Date | null>null,
     favoritesRanking: <number | null>null,
@@ -50,8 +55,15 @@ export class EditContactComponent implements OnInit {
     });
   }
 
+  get firstName() {
+    return this.contactForm.controls.firstName;
+  }
+
   saveContact() {
-    console.log(this.contactForm.value.dateOfBirth, typeof this.contactForm.value.dateOfBirth);
+    console.log(
+      this.contactForm.value.dateOfBirth,
+      typeof this.contactForm.value.dateOfBirth
+    );
     this.contactsService.saveContact(this.contactForm.getRawValue()).subscribe({
       next: () => this.router.navigate(['/contacts']),
     });

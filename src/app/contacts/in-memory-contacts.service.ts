@@ -12,7 +12,10 @@ export class InMemoryContactsApi implements InMemoryDbService {
         lastName: 'Doodleplumb',
         dateOfBirth: new Date('1994/05/05'),
         favoritesRanking: 0,
-        phones: [{ phoneNumber: '555-765-4321', phoneType: 'mobile' }],
+        phones: [
+          { phoneNumber: '555-765-4321', phoneType: 'mobile' },
+          { phoneNumber: '555-765-5678', phoneType: 'work' },
+        ],
         address: {
           streetAddress: '777 Whimsy Lane',
           city: 'Gleeberg City',

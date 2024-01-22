@@ -45,6 +45,7 @@
             <input formControlName="phoneNumber" placeholder="Phone" />
             <img src="/assets/plus-grey-blue.png" class="add" (click)="addPhone()" />
           </div>
+          <em *ngIf="phone.controls.phoneNumber.invalid">Preferred Phone is required</em>
           <div class="radio">
             <span *ngFor="let phoneType of phoneTypes"
               ><input
@@ -55,6 +56,7 @@
               {{ phoneType.title }}
             </span>
           </div>
+          <span><input type="checkbox" formControlName="preferred"/> Preferred</span>
         </div>
       </div>
     </section>

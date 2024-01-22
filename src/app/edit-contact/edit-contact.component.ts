@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ContactsService } from '../contacts/contacts.service';
 import { addressTypeValues, phoneTypeValues } from '../contacts/contact.model';
 import { restrictedWords } from '../validators/restricted-words.validator';
-import { distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
   templateUrl: './edit-contact.component.html',
@@ -41,7 +41,10 @@ export class EditContactComponent implements OnInit {
 
   ngOnInit() {
     const contactId = this.route.snapshot.params['id'];
-    if (!contactId) return;
+    if (!contactId) {
+      this.subscribeToAddressChanges();
+      return;
+    }
 
     this.contactsService.getContact(contactId).subscribe((contact) => {
       if (!contact) return;
@@ -50,10 +53,36 @@ export class EditContactComponent implements OnInit {
         this.addPhone();
       }
       this.contactForm.setValue(contact);
+      this.subscribeToAddressChanges();
     });
   }
 
+  subscribeToAddressChanges() {
+    const addressGroup = this.contactForm.controls.address;
+    // Loop over all formcontrols and temporarily remove their validators as the user is typing
+    addressGroup.valueChanges
+      .pipe(distinctUntilChanged(this.stringifyCompare))
+      .subscribe(() => {
+        for (const controlName in addressGroup.controls) {
+          addressGroup
+            .get(controlName)
+            ?.removeValidators([Validators.required]);
+          addressGroup.get(controlName)?.updateValueAndValidity();
+        }
+      });
+    // Add validators back 2 seconds after typing
+    addressGroup.valueChanges
+      .pipe(debounceTime(2000), distinctUntilChanged(this.stringifyCompare))
+      .subscribe(() => {
+        for (const controlName in addressGroup.controls) {
+          addressGroup.get(controlName)?.addValidators([Validators.required]);
+          addressGroup.get(controlName)?.updateValueAndValidity();
+        }
+      });
+  }
+
   stringifyCompare(a: any, b: any) {
+    // this prevents an infinite loop in a subscribed value
     return JSON.stringify(a) === JSON.stringify(b);
   }
 
@@ -63,18 +92,14 @@ export class EditContactComponent implements OnInit {
       phoneType: '',
       preferred: false,
     });
-
-    phoneGroup.controls.preferred.valueChanges
+    const { phoneNumber, preferred } = phoneGroup.controls;
+    preferred.valueChanges
       .pipe(distinctUntilChanged(this.stringifyCompare))
       .subscribe((value) => {
-        if (value)
-          phoneGroup.controls.phoneNumber.addValidators([Validators.required]);
-        else
-          phoneGroup.controls.phoneNumber.removeValidators([
-            Validators.required,
-          ]);
+        if (value) phoneNumber.addValidators([Validators.required]);
+        else phoneNumber.removeValidators([Validators.required]);
         // Reevaluate the validity after changing validators
-        phoneGroup.controls.phoneNumber.updateValueAndValidity();
+        phoneNumber.updateValueAndValidity();
       });
 
     return phoneGroup;
